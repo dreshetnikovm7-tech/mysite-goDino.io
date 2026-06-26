@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Dino Game</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h2>Счёт: <span id="score">0</span></h2>
+
+<div class="game">
+    <div id="dino"></div>
+    <div id="cactus"></div>
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    background:#eee;
+    font-family:Arial;
+}
+
+.game{
+    width:800px;
+    height:250px;
+    border:3px solid #222;
+    position:relative;
+    overflow:hidden;
+    background:white;
+}
+
+.game::after{
+    content:"";
+    position:absolute;
+    bottom:0;
+    width:100%;
+    height:3px;
+    background:black;
+}
+
+#dino{
+    width:50px;
+    height:50px;
+    background:#333;
+    position:absolute;
+    bottom:3px;
+    left:70px;
+}
+
+#cactus{
+    width:25px;
+    height:60px;
+    background:green;
+    position:absolute;
+    bottom:3px;
+    right:-40px;
+    animation:cactus 2s linear infinite;
+}
+
+.jump{
+    animation:jump .6s linear;
+}
+
+@keyframes jump{
+
+0%{bottom:3px;}
+30%{bottom:130px;}
+50%{bottom:150px;}
+80%{bottom:130px;}
+100%{bottom:3px;}
+
+}
+
+@keyframes cactus{
+
+0%{right:-40px;}
+100%{right:840px;}
+
+}
+</style>
+<script>
+const dino = document.getElementById("dino");
+const cactus = document.getElementById("cactus");
+const scoreText = document.getElementById("score");
+
+let score = 0;
+let gameOver = false;
+
+// Прыжок
+document.addEventListener("keydown", function(e){
+
+    if(e.code==="Space" || e.code==="ArrowUp"){
+        jump();
+    }
+
+});
+
+function jump(){
+
+    if(!dino.classList.contains("jump")){
+
+        dino.classList.add("jump");
+
+        setTimeout(()=>{
+            dino.classList.remove("jump");
+        },600);
+
+    }
+
+}
+
+// Счёт
+setInterval(()=>{
+
+    if(!gameOver){
+        score++;
+        scoreText.innerHTML=score;
+    }
+
+},100);
+
+// Проверка столкновений (хитбоксы)
+setInterval(()=>{
+
+    if(gameOver) return;
+
+    let dinoTop=parseInt(window.getComputedStyle(dino).getPropertyValue("bottom"));
+
+    let cactusRight=parseInt(window.getComputedStyle(cactus).getPropertyValue("right"));
+
+    let cactusX=800-cactusRight-25;
+
+    // Хитбоксы
+    if(
+        cactusX>50 &&
+        cactusX<110 &&
+        dinoTop<60
+    ){
+
+        gameOver=true;
+
+        cactus.style.animationPlayState="paused";
+
+        alert("Игра окончена!\nСчёт: "+score);
+
+    }
+
+},10);ц
+</script>
